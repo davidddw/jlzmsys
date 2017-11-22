@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.cloud.ssm.mapper.DepartmentMapper">
+  <resultMap type="Department" id="departmentResultMap">
+    <id property="id" column="id" />
+    <id property="deptId" column="dept_id" />
+    <id property="name" column="dept_nm" />
+    <id property="simpleName" column="dept_smpl_nm" />
+    <id property="deleteSign" column="del_sgn" />
+    <id property="addBy" column="add_by" />
+    <id property="addDate" column="add_date" />
+    <id property="updateBy" column="upd_by" />
+    <id property="updateDate" column="upd_date" />
+    <id property="lockVersionCount" column="lock_ver_cnt" />
+  </resultMap>
+
+  <insert id="insert" parameterType="Department">
+    INSERT INTO tr_dept (dept_id,dept_nm,
+    dept_smpl_nm,del_sgn,add_by,add_date,
+    upd_by,upd_date,lock_ver_cnt)
+    VALUES
+    (#{deptId},#{name},#{simpleName},#{deleteSign},#{addBy},sysdate(),
+    #{updateBy},sysdate(),#{lockVersionCount})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="Department" >
+    UPDATE tr_dept
+    <set>
+      <if test="deptId!=null and deptId!=''">
+        dept_id=#{deptId},
+      </if>
+      <if test="name!=null and name!=''">
+        dept_nm=#{name},
+      </if>
+      <if test="simpleName!=null and simpleName!=''">
+        dept_smpl_nm=#{simpleName},
+      </if>
+      UPD_DATE=SYSDATE()
+    </set>
+    <where>
+      ID=#{id}
+    </where>
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    DELETE FROM
+    tr_dept
+    WHERE id=#{id}
+  </delete>
+
+  <select id="selectCount" resultType="Integer">
+    SELECT
+    COUNT(*)
+    FROM tr_dept
+    WHERE del_sgn='0'
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="Integer" resultMap="departmentResultMap">
+    SELECT
+    	*
+    FROM tr_dept
+    <where>
+    	del_sgn='0' AND ID=#{id}
+    </where>
+  </select>
+
+  <select id="selectDepartmentList" resultMap="departmentResultMap">
+    SELECT 
+      *
+    FROM
+      tr_dept
+    <where>
+      del_sgn='0'
+      <if test="id!=null and id!=''">
+        AND dept_id=#{deptId}
+      </if>
+    </where>
+    ORDER BY dept_id
+  </select>
+</mapper>

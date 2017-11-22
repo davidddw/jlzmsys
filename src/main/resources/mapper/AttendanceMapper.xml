@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.cloud.ssm.mapper.AttendanceMapper">
+  <resultMap type="Attendance" id="attendanceResult">
+    <result property="ymd" column="YMD"/>
+    <result property="userId" column="USER_ID"/>
+    <result property="attdncDiv" column="ATTDNC_DIV"/>
+    <result property="strwkTime" column="STRWK_TIME"/>
+    <result property="endwkTime" column="ENDWK_TIME"/>
+    <result property="lateTime" column="LATE_TIME"/>
+    <result property="earlyTime" column="EARLY_TIME"/>
+    <result property="ovtmwkTime" column="OVTMWK_TIME"/>
+    <result property="wkTime" column="WK_TIME"/>
+    <result property="attdncChgRsnDiv" column="ATTDNC_CHG_RSN_DIV"/>
+    <result property="attdncChgRsnCont" column="ATTDNC_CHG_RSN_CONT"/>
+    <result property="attdncImpRsltCd" column="ATTDNC_IMP_RSLT_CD"/>
+    <result property="delSgn" column="DEL_SGN"/>
+    <result property="addBy" column="ADD_BY"/>
+    <result property="addDate" column="ADD_DATE"/>
+    <result property="updBy" column="UPD_BY"/>
+    <result property="updDate" column="UPD_DATE"/>
+    <result property="lockVerCnt" column="LOCK_VER_CNT"/>
+    <result property="cpsthldTimeWork" column="CPSTHLD_TIME_WORK"/>
+    <result property="cpsthldTimeHld" column="CPSTHLD_TIME_HLD"/>
+    <result property="cpsthldTimeOffhld" column="CPSTHLD_TIME_OFFHLD"/>
+    <result property="hldRest" column="HLD_REST"/>
+    <result property="hldLieu" column="HLD_LIEU"/>
+    <result property="hldSick" column="HLD_SICK"/>
+    <result property="hldLeave" column="HLD_LEAVE"/>
+    <result property="hldMarry" column="HLD_MARRY"/>
+    <result property="hldMater" column="HLD_MATER"/>
+    <result property="hldFuner" column="HLD_FUNER"/>
+    <result property="hldBusin" column="HLD_BUSIN"/>
+    <result property="hldOther" column="HLD_OTHER"/>
+    <result property="absentHours" column="ABSENT_HOURS"/>
+    <result property="punCardTimes" column="PUN_CARD_TIMES"/>
+    <result property="forCardTimes" column="FOR_CARD_TIMES"/>
+    <result property="remarks" column="REMARKS"/>
+    <result property="workOnDes" column="WORK_ON_DES"/>
+    <result property="workOffDes" column="WORK_OFF_DES"/>
+    <result property="absncTime" column="ABSNC_TIME"/>
+  </resultMap>
+
+  <insert id="save" parameterType="attendance">
+    INSERT INTO TE_ATTDNC (ymd,
+    user_id, attdnc_div, strwk_time, endwk_time,
+    late_time, early_time,
+    ovtmwk_time, wk_time, attdnc_chg_rsn_div,
+    attdnc_chg_rsn_cont,
+    attdnc_imp_rslt_cd, del_sgn, add_by, add_date,
+    lock_ver_cnt,
+    absent_hours)
+    VALUES
+    (#{ymd}, #{userId}, #{attdncDiv},
+    #{strwkTime}, #{endwkTime},
+    #{lateTime}, #{earlyTime},
+    #{ovtmwkTime}, #{wkTime},
+    #{attdncChgRsnDiv},
+    #{attdncChgRsnCont}, #{attdncImpRsltCd},
+    #{delSgn},
+    #{addBy},
+    sysdate(),
+    #{lockVerCnt}, #{absentHours})
+  </insert>
+  
+  <update id="update" parameterType="attendance">
+    UPDATE TE_ATTDNC
+    <set>
+      <if test="attdncDiv!=null and attdncDiv!=''">
+        ATTDNC_DIV=#{attdncDiv},
+      </if>
+      <if test="strwkTime!=null and strwkTime!=''">
+        STRWK_TIME=#{strwkTime},
+      </if>
+      <if test="endwkTime!=null and endwkTime!=''">
+        ENDWK_TIME=#{endwkTime},
+      </if>
+      <if test="ovtmwkTime!=null and ovtmwkTime!=''">
+        OVTMWK_TIME=#{ovtmwkTime},
+      </if>
+      <if test="wkTime!=null and wkTime!=''">
+        WK_TIME=#{wkTime},
+      </if>
+      <if test="attdncChgRsnDiv!=null and attdncChgRsnDiv!=''">
+        ATTDNC_CHG_RSN_DIV=#{attdncChgRsnDiv},
+      </if>
+      <if test="attdncImpRsltCd!=null and attdncImpRsltCd!=''">
+        ATTDNC_IMP_RSLT_CD=#{attdncImpRsltCd},
+      </if>
+      <if test="attdncChgRsnCont!=null and attdncChgRsnCont!=''">
+        ATTDNC_CHG_RSN_CONT=#{attdncChgRsnCont},
+      </if>
+      ABSENT_HOURS=#{absentHours},
+      <if test="cpsthldTimeWork!=null and cpsthldTimeWork!=''">
+        CPSTHLD_TIME_WORK=#{cpsthldTimeWork},
+      </if>
+      <if test="cpsthldTimeHld!=null and cpsthldTimeHld!=''">
+        CPSTHLD_TIME_HLD=#{cpsthldTimeHld},
+      </if>
+      <if test="cpsthldTimeOffhld!=null and cpsthldTimeOffhld!=''">
+        CPSTHLD_TIME_OFFHLD=#{cpsthldTimeOffhld},
+      </if>
+      <if test="workOnDes!=null and workOnDes!=''">
+        WORK_ON_DES=#{workOnDes},
+      </if>
+      <if test="workOffDes!=null and workOffDes!=''">
+        WORK_OFF_DES=#{workOffDes},
+      </if>
+      <if test="hldRest!=null and hldRest!=''">
+        HLD_REST=#{hldRest},
+      </if>
+      <if test="hldLieu!=null and hldLieu!=''">
+        HLD_LIEU=#{hldLieu},
+      </if>
+      <if test="hldSick!=null and hldSick!=''">
+        HLD_SICK=#{hldSick},
+      </if>
+      <if test="hldLeave!=null and hldLeave!=''">
+        HLD_LEAVE=#{hldLeave},
+      </if>
+      <if test="hldMarry!=null and hldMarry!=''">
+        HLD_MARRY=#{hldMarry},
+      </if>
+      <if test="hldMater!=null and hldMater!=''">
+        HLD_MATER=#{hldMater},
+      </if>
+      <if test="hldFuner!=null and hldFuner!=''">
+        HLD_FUNER=#{hldFuner},
+      </if>
+      <if test="hldBusin!=null and hldBusin!=''">
+        HLD_BUSIN=#{hldBusin},
+      </if>
+      <if test="hldOther!=null and hldOther!=''">
+        HLD_OTHER=#{hldOther},
+      </if>
+      <if test="punCardTimes!=null and punCardTimes!=''">
+        PUN_CARD_TIMES=#{punCardTimes},
+      </if>
+      <if test="forCardTimes!=null and forCardTimes!=''">
+        FOR_CARD_TIMES=#{forCardTimes},
+      </if>
+      ADD_DATE=sysdate()
+    </set>
+    <where>
+      ymd=#{ymd} AND user_id=#{userId}
+    </where>
+  </update>
+  
+</mapper>

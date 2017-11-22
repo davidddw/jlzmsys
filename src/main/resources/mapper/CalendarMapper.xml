@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.cloud.ssm.mapper.CalendarMapper">
+  <resultMap type="WorkCalendar" id="workCalendarResultMap">
+  	<id property="id" column="ID"/>
+    <id property="ymd" column="YMD" />
+    <id property="hldSgn" column="HLD_SGN" />
+    <id property="memo" column="MEMO" />
+    <id property="deleteSign" column="DEL_SGN" />
+    <id property="addBy" column="ADD_BY" />
+    <id property="addDate" column="ADD_DATE" />
+    <id property="updateBy" column="UPD_BY" />
+    <id property="updateDate" column="UPD_DATE" />
+    <id property="lockVersionCount" column="LOCK_VER_CNT" />
+  </resultMap>
+  
+  <insert id="insert" parameterType="WorkCalendar">
+    INSERT INTO tr_calendar (YMD,HLD_SGN,MEMO,
+    DEL_SGN,ADD_BY,ADD_DATE,UPD_BY,UPD_DATE,LOCK_VER_CNT)
+    VALUES
+    (#{ymd},#{hldSgn},#{memo},#{deleteSign},#{addBy},sysdate(),
+    #{updateBy},sysdate(),#{lockVersionCount})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="WorkCalendar" >
+    UPDATE tr_calendar
+    <set>
+      <if test="ymd!=null and ymd!=''">
+        YMD=#{ymd},
+      </if>
+      <if test="hldSgn!=null and hldSgn!=''">
+        HLD_SGN=#{hldSgn},
+      </if>
+      <if test="memo!=null and memo!=''">
+        MEMO=#{memo},
+      </if>
+      UPD_DATE=SYSDATE()
+    </set>
+    <where>
+      ID=#{id}
+    </where>
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    DELETE FROM
+    tr_calendar
+    WHERE id=#{id}
+  </delete>
+
+  <select id="selectCount" resultType="Integer">
+    SELECT
+    COUNT(*)
+    FROM tr_calendar
+    <where>
+      del_sgn='0'    
+      <if test="filter!=null and filter!=''">
+		and SUBSTR(YMD,1,7)=#{filter}
+	  </if>
+    </where>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="Integer" resultMap="workCalendarResultMap">
+    SELECT
+    	*
+    FROM tr_calendar
+    <where>
+    	del_sgn='0' AND ID=#{id}
+    </where>
+  </select>
+
+  <select id="selectCalendartList" resultMap="workCalendarResultMap">
+    SELECT 
+      T1.ID,
+      T1.YMD,
+      T2.CODE_NAME AS HLD_SGN,
+      T1.MEMO
+    FROM
+      tr_calendar T1
+    LEFT JOIN CD_MASTER T2 ON T1.HLD_SGN=T2.CODE AND T2.TYPE_EN='HldSgn'
+    <where>
+      del_sgn='0'    
+      <if test="filter!=null and filter!=''">
+		and SUBSTR(T1.YMD,1,7)=#{filter}
+	  </if>
+    </where>
+    ORDER BY YMD
+  </select>
+  
+</mapper>

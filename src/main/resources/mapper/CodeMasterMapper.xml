@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.cloud.ssm.mapper.CodeMasterMapper">
+  <resultMap type="CodeMaster" id="codeMasterResultMap">
+    <result property="id" column="ID"/>
+    <result property="codeName" column="CODE_NAME"/>
+    <result property="type" column="TYPE"/>
+    <result property="typeEn" column="TYPE_EN"/>
+    <result property="code" column="CODE"/>
+  </resultMap>
+  
+  <insert id="insert" parameterType="CodeMaster">
+    INSERT INTO CD_MASTER 
+    (CODE_NAME,TYPE,TYPE_EN,CODE)
+    VALUES
+    (#{codeName},#{type},#{typeEn},#{code})
+  </insert>
+  
+  <select id="selectCount" resultType="Integer">
+    select count(*) from CD_MASTER
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    DELETE FROM
+    CD_MASTER
+    WHERE ID=#{id}
+  </delete>
+  
+  <select id="selectByPrimaryKey" resultMap="codeMasterResultMap">
+    SELECT
+    	*
+    FROM CD_MASTER
+    <where>
+    	ID=#{id}
+    </where>
+  </select>
+  
+  <select id="selectByTypeEn" resultMap="codeMasterResultMap">
+    SELECT
+    	*
+    FROM CD_MASTER
+    <where>
+    	TYPE_EN=#{typeEn}
+    </where>
+  </select>
+  
+  <update id="updateByPrimaryKey" parameterType="CodeMaster" >
+    UPDATE CD_MASTER
+    <set>
+      <if test="codeName!=null and codeName!=''">
+        CODE_NAME=#{codeName},
+      </if>
+      <if test="type!=null and type!=''">
+        TYPE=#{type},
+      </if>
+      <if test="typeEn!=null and typeEn!=''">
+        TYPE_EN=#{typeEn},
+      </if>
+      <if test="code!=null and code!=''">
+        CODE=#{code},
+      </if>
+    </set>
+    <where>
+      ID=#{id}
+    </where>
+  </update>
+
+  <select id="selectAllCodeMaster" resultMap="codeMasterResultMap">
+    select * from CD_MASTER
+    <where>
+      <if test="typeEn!=null and typeEn!=''">
+        where TYPE_EN=#{typeEn}
+      </if>
+    </where>
+  </select>
+  
+</mapper>

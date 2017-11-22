@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.cloud.ssm.mapper.BooksMapper">
+  <resultMap type="Books" id="booksResultMap">
+    <id property="id" column="ID" />
+    <id property="sn" column="SN" />
+    <id property="name" column="NAME" />
+    <id property="press" column="PRESS" />
+    <id property="author" column="AUTHOR" />
+    <id property="purchaseDate" column="PURCHASE_YMD" />
+    <id property="unitPrice" column="UNIT_PRICE" />
+    <id property="remarks" column="REMARKS" />
+    <id property="status" column="STATUS" />
+    <id property="deleteSign" column="DEL_SGN" />
+    <id property="addBy" column="ADD_BY" />
+    <id property="addDate" column="ADD_DATE" />
+    <id property="updateBy" column="UPD_BY" />
+    <id property="updateDate" column="UPD_DATE" />
+    <id property="lockVersionCount" column="LOCK_VER_CNT" />
+  </resultMap>
+
+  <insert id="insert" parameterType="Books">
+    INSERT INTO tr_book 
+    (SN,NAME,PRESS,AUTHOR,PURCHASE_YMD,UNIT_PRICE,REMARKS,
+    DEL_SGN,ADD_BY,ADD_DATE,UPD_BY,LOCK_VER_CNT)
+    VALUES
+    (#{sn},#{name},#{press},#{author},#{purchaseDate},#{unitPrice},#{remarks},
+    #{deleteSign},#{addBy},sysdate(),#{updateBy},#{lockVersionCount})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="Books" >
+    UPDATE tr_book
+    <set>
+      <if test="sn!=null and sn!=''">
+        SN=#{sn},
+      </if>
+      <if test="name!=null and name!=''">
+        NAME=#{name},
+      </if>
+      <if test="press!=null and press!=''">
+        PRESS=#{press},
+      </if>
+      <if test="author!=null and author!=''">
+        AUTHOR=#{author},
+      </if>
+      <if test="purchaseDate!=null and purchaseDate!=''">
+        PURCHASE_YMD=#{purchaseDate},
+      </if>
+      <if test="unitPrice!=null and unitPrice!=''">
+        UNIT_PRICE=#{unitPrice},
+      </if>
+      <if test="remarks!=null and remarks!=''">
+        REMARKS=#{remarks},
+      </if>
+      <if test="status!=null and status!=''">
+        STATUS=#{status},
+      </if>
+      <if test="deleteSign!=null and deleteSign!=''">
+        DEL_SGN=#{deleteSign},
+      </if>
+      <if test="lockVersionCount!=null and lockVersionCount!=''">
+        LOCK_VER_CNT=#{lockVersionCount},
+      </if>
+      UPD_DATE=SYSDATE()
+    </set>
+    <where>
+      ID=#{id}
+    </where>
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    DELETE FROM
+    tr_book
+    WHERE ID=#{id}
+  </delete>
+
+  <select id="selectCount" resultType="Integer">
+    SELECT
+    COUNT(*)
+    FROM tr_book
+    WHERE del_sgn='0'
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="Integer" resultMap="booksResultMap">
+    SELECT
+    	*
+    FROM tr_book
+    <where>
+    	del_sgn='0' AND ID=#{id}
+    </where>
+  </select>
+
+  <select id="selectBooksList" resultMap="booksResultMap">
+    SELECT 
+      T1.ID,
+      T1.SN,
+      T1.NAME,
+      T1.AUTHOR,
+      T1.PURCHASE_YMD,
+      T2.CODE_NAME AS STATUS,
+      T1.UPD_DATE,
+      T1.PRESS
+    FROM
+      tr_book T1
+    LEFT JOIN CD_MASTER T2 ON T1.STATUS=T2.CODE AND T2.TYPE_EN='bookStatus'
+    <where>
+      del_sgn='0'
+      <if test="sn!=null and sn!=''">
+        AND SN=#{sn}
+      </if>
+      <if test="filter!=null and filter=='ABN' ">
+        AND T1.STATUS!='0'
+      </if>
+      <if test="filter!=null and filter=='AN' ">
+        AND T1.STATUS='0'
+      </if>
+    </where>
+    ORDER BY SN
+  </select>
+</mapper>
